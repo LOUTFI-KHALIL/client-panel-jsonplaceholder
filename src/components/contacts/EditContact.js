@@ -2,13 +2,24 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Consumer } from "../context";
 import TextInputGroup from "../helpers/TextInputGroup";
-class AddContact extends Component {
+class EditContact extends Component {
   state = {
     name: "",
     email: "",
     phone: "",
     errors: {},
   };
+  async componentDidMount() {
+    const id = this.props.match.params.id;
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${id}`
+    );
+    this.setState({
+      name: res.data.name,
+      email: res.data.email,
+      phone: res.data.phone,
+    });
+  }
   onChangeInput = (e) => this.setState({ [e.target.name]: e.target.value });
   submit = async (dispatch, size, e) => {
     e.preventDefault();
@@ -26,19 +37,20 @@ class AddContact extends Component {
       this.setState({ errors: { phone: "the phone is required !" } });
       return;
     }
-    const newContact = {
+    const upContact = {
       name: this.state.name,
       email: this.state.email,
       phone: this.state.phone,
     };
 
     try {
-      const res = await axios.post(
-        "https://jsonplaceholder.typicode.com/users",
-        newContact
+      const id = this.props.match.params.id;
+      const res = await axios.put(
+        `https://jsonplaceholder.typicode.com/users/${id}`,
+        upContact
       );
       dispatch({
-        type: "ADD_CONTACT",
+        type: "UPDATE_CONTACT",
         payload: res.data,
       });
     } catch (e) {
@@ -72,7 +84,7 @@ class AddContact extends Component {
               >
                 <div className="card">
                   <div className="card-body">
-                    <h4 className="card-title">Add Contact</h4>
+                    <h4 className="card-title">Edit Contact</h4>
                     <div className="card-text">
                       <TextInputGroup
                         label="Name"
@@ -99,8 +111,8 @@ class AddContact extends Component {
                         error={errors.phone}
                       />
 
-                      <button className="btn btn-success btn-block">
-                        Add +
+                      <button className="btn btn-danger btn-block">
+                        Edit Contact
                       </button>
                     </div>
                   </div>
@@ -113,4 +125,4 @@ class AddContact extends Component {
     );
   }
 }
-export default AddContact;
+export default EditContact;

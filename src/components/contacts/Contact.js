@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 import "./contacts.css";
 import { Consumer } from "../context";
+import { Link } from "react-router-dom";
 class Contact extends Component {
   state = {
     showContactToggle: true,
@@ -14,11 +16,18 @@ class Contact extends Component {
     });
   }
 
-  onDeleteClick = (id, dispatch) => {
-    dispatch({
-      type: "DELETE_CONTACT",
-      payload: id,
-    });
+  onDeleteClick = async (id, dispatch) => {
+    try {
+      const res = await axios.delete(
+        "https://jsonplaceholder.typicode.com/users/" + id
+      );
+      dispatch({
+        type: "DELETE_CONTACT",
+        payload: id,
+      });
+    } catch (e) {
+      alert(e);
+    }
   };
   render() {
     const { name, phone, email, id } = this.props.data;
@@ -42,6 +51,18 @@ class Contact extends Component {
                     className="fa fa-times"
                     onClick={this.onDeleteClick.bind(this, id, dispatch)}
                   ></i>
+
+                  <Link to={`/contacts/edit/${id}`}>
+                    <i
+                      className="fa fa-pencil"
+                      style={{
+                        color: "orange",
+                        float: "right",
+                        cursor: "pointer",
+                        marginLeft: "8px",
+                      }}
+                    ></i>
+                  </Link>
                 </h4>
                 <span className="card-text">
                   {this.state.showContactToggle ? (

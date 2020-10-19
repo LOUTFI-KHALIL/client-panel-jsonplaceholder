@@ -6,6 +6,7 @@ import Contacts from "./components/contacts/Contacts";
 import Contact from "./components/contacts/Contacts";
 import About from "./components/pages/About";
 import AddContact from "./components/contacts/AddContact";
+import EditContact from "./components/contacts/EditContact";
 import PageNotFound from "./components/pages/PageNotFound";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
@@ -20,6 +21,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={Contacts} />
             <Route exact path="/contacts/add" component={AddContact} />
+            <Route exact path="/contacts/edit/:id" component={EditContact} />
             <Route exact path="/about" component={About} />
             <Route exact path="/about/:id" component={About} />
             <Route component={PageNotFound} />
